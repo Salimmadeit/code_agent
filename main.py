@@ -1,5 +1,6 @@
 def main():
     import os
+    import argpause
     from openai import OpenAI
     from dotenv import load_dotenv
 
@@ -28,6 +29,11 @@ def main():
         ],
     )
 
+    # input and output tokens
+    if response.usage != None:
+        print(f"Prompt tokens: {response.usage.completion_tokens} \nResponse tokens: {response.usage.prompt_tokens}")
+    else:
+        raise RuntimeError("Failed API request, model response is empty,")
     print(response.choices[0].message.content)
 
 if __name__ == "__main__":
