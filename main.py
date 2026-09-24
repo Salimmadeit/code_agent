@@ -21,25 +21,31 @@ def main():
 
     # arguments parsing for user prompts
     parser = argparse.ArgumentParser(description="coding_agent")
-    parser.add_argument("user_prompt", type=str, help="type your prompt here")
+    parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
 
-    response = client.chat.completions.create(
-        model="openrouter/free",
-        messages=[
+    messages=[
             {
                 "role": "user",
                 "content": args.user_prompt
             }
-        ],
+        ]
+
+    response = client.chat.completions.create(
+        model="openrouter/free",
+        messages=messages
     )
 
     # input and output tokens
     if response.usage != None:
-        print(f"Prompt tokens: {response.usage.prompt_tokens} \nResponse tokens: {response.usage.completion_tokens}")
+        if args.verbose == True:
+            print(f"User prompt: {args.user_prompt}")
+            print(f"Prompt tokens: {response.usage.prompt_tokens}")
+            print(f"Response tokens: {response.usage.completion_tokens}")
     else:
         raise RuntimeError("Failed API request, model response is empty,")
-    print(response.choices[0].message.content)
+    print(f"Response: \n{response.choices[0].message.content}")
 
 if __name__ == "__main__":
     main()
